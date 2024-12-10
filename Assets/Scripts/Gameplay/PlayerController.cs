@@ -96,6 +96,13 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // TODO this should be moved into a mission start system, create a mission activate zone
+        if (Mission_Activator.ActiveMission != null)
+        {
+            if (!Mission_Activator.ActiveMission.MissionStarted)
+                Mission_Activator.ActiveMission.StartMission();
+        }
+
         UpdateDirection();
 
         MovePlayer();
@@ -137,16 +144,16 @@ public class PlayerController : MonoBehaviour
     {
         _direction = ControllerDirection();
 
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
             _direction.y += 1;
 
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
             _direction.y -= 1;
 
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             _direction.x -= 1;
 
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
             _direction.x += 1;
 
         if (!Mathf.Approximately(MQTT_Speed, 0))
@@ -229,8 +236,6 @@ public class PlayerController : MonoBehaviour
         {
             // old collision code by Jai
             // TODO replace other pickups with collectable script as above, see Prefabs/Pickups/Star for example
-            Debug.Log(other.name);
-
             if (other.tag == "1")
             {
                 score = score + 1;
